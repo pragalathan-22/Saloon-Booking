@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
   specialistCard: {
     alignItems: 'center',
     marginHorizontal: 10,
-    marginTop: 10,
+    marginTop: 20,
     padding: 10,
     backgroundColor: '#fff',
     borderRadius: 10,
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: 30,
+    marginBottom: 60,
   },
   bookButtonText: {
     color: '#FFF',

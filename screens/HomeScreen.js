@@ -129,9 +129,9 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.location}>{locationName}</Text>
-        <TouchableOpacity style={styles.profileIconContainer}>
+        {/* <TouchableOpacity style={styles.profileIconContainer}>
           <Image source={require('../assets/stylist9.jpg')} style={styles.profileIcon} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <FlatList

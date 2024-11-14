@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 
@@ -13,7 +13,7 @@ const ProfileScreen = () => {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('Avenue 2nd Street NW SY');
   const [dob, setDob] = useState('12-05-1990');
-
+  
   // Request permission to access media library
   useEffect(() => {
     const requestPermissions = async () => {
@@ -37,6 +37,28 @@ const ProfileScreen = () => {
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "OK",
+          onPress: () => {
+            // Clear user data or token here
+            // Example: AsyncStorage.removeItem('user_token');
+            navigation.navigate('Login'); // Navigate to login screen
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -109,6 +131,14 @@ const ProfileScreen = () => {
           />
         </View>
       </View>
+
+      {/* Logout Button */}
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={handleLogout}
+      >
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -175,6 +205,18 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     flex: 1,
     padding: 5,
+    fontSize: 16,
+  },
+  logoutButton: {
+    backgroundColor: '#D32F2F',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    marginTop: 30,
+    alignSelf: 'center',
+  },
+  logoutButtonText: {
+    color: '#fff',
     fontSize: 16,
   },
 });

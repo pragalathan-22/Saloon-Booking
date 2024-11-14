@@ -1,7 +1,9 @@
 // /screens/RegisterScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../Firebase/FirebaseConfig';
 
 function RegisterScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -9,12 +11,20 @@ function RegisterScreen({ navigation }) {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = () => {
-    // Here you can add logic to handle registration validation
     if (password === confirmPassword) {
-      // If registration is successful, navigate back to login
-      navigation.navigate('Login');
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Registration successful
+          const user = userCredential.user;
+          Alert.alert("Success", "Account created successfully!");
+          navigation.navigate('Login'); // Navigate to login screen
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          Alert.alert("Error", errorMessage);
+        });
     } else {
-      alert('Passwords do not match!');
+      Alert.alert("Error", "Passwords do not match!");
     }
   };
 

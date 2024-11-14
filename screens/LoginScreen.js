@@ -1,15 +1,30 @@
 // /screens/LoginScreen.js
-import React from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; // Import Firebase Auth functions
+import { auth } from '../Firebase/FirebaseConfig'; // Assuming you have firebase.js for firebase initialization
 
 function LoginScreen({ navigation }) {
-  const handleLogin = () => {
-    navigation.replace('Main');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async () => {
+    if (email === '' || password === '') {
+      Alert.alert('Error', 'Please enter both email and password');
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password); // Firebase sign-in
+      navigation.replace('Main'); // Navigate to Main screen on successful login
+    } catch (error) {
+      Alert.alert('Login Error', error.message); // Show error message if login fails
+    }
   };
 
   const handleRegister = () => {
-    navigation.navigate('Register');
+    navigation.navigate('Register'); // Navigate to Register screen if the user doesn't have an account
   };
 
   return (
@@ -24,21 +39,25 @@ function LoginScreen({ navigation }) {
       <View style={styles.bottomContainer}>
         <Text style={styles.title}>Login</Text>
         <TextInput
-          placeholder="Username"
+          placeholder="Email"
           placeholderTextColor="#999"
+          value={email}
+          onChangeText={setEmail}
           style={[styles.input, styles.inputUsername]}
         />
         <TextInput
           placeholder="Password"
           placeholderTextColor="#999"
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
           style={[styles.input, styles.inputPassword]}
         />
-        
+
         <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity onPress={handleRegister} style={styles.registerContainer}>
           <Text style={styles.registerTextWrapper}>
             Don’t have an account? <Text style={styles.registerText}>Register</Text>
