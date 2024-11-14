@@ -16,8 +16,8 @@ function LoginScreen({ navigation }) {
     <View style={styles.container}>
       {/* Top Section with Icon */}
       <View style={styles.topContainer}>
-        <Icon name="scissors" size={60} color="black" />
-        <Text style={styles.iconText}>Welcome Back</Text>
+        <Icon name="scissors" size={60} color="white" />
+        <Text style={styles.iconText}>Welcome</Text>
       </View>
 
       {/* Bottom Section with Login Form */}
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 60,
     paddingBottom: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#1f1f1f',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     elevation: 10, // Android shadow
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   iconText: {
     fontSize: 18,
-    color: '#555',
+    color: 'white',
     marginTop: 10,
   },
   bottomContainer: {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#e67e22',
+    color: '#FF5722',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     padding: 15,
-    backgroundColor: '#e67e22',
+    backgroundColor: '#FF5722',
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   registerText: {
-    color: '#e67e22',
+    color: '#FF5722',
     fontSize: 14,
     fontWeight: 'bold',
   },

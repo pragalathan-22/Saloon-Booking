@@ -6,6 +6,7 @@ import AppointmentScreen from './screens/AppointmentScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen'
+import SpecialistDetailsScreen from './screens/SpecialistDetailsScreen';
 // Icon imports
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -21,7 +22,7 @@ function BottomTabs() {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
-          backgroundColor: '#abb2b9',
+          backgroundColor: 'white',
           position: 'absolute',
           shadowColor: '#000',
           shadowOpacity: 0.3,
@@ -43,7 +44,7 @@ function BottomTabs() {
         options={{
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <FontAwesome name="home" size={24} color="#e67e22" />
+              <FontAwesome name="home" size={24} color="#FF5722" />
             ) : (
               <AntDesign name="home" size={24} color="black" />
             ),
@@ -55,7 +56,7 @@ function BottomTabs() {
         options={{
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <MaterialIcons name="calendar-today" size={24} color="#e67e22" />
+              <MaterialIcons name="calendar-today" size={24} color="#FF5722" />
             ) : (
               <MaterialIcons name="calendar-today" size={24} color="black" />
             ),
@@ -67,7 +68,7 @@ function BottomTabs() {
         options={{
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <Ionicons name="person" size={24} color="#e67e22" />
+              <Ionicons name="person" size={24} color="#FF5722" />
             ) : (
               <Ionicons name="person-outline" size={24} color="black" />
             ),
@@ -83,6 +84,7 @@ function Navigation() {
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
       <Stack.Screen name='Register' component={RegisterScreen} options={{headerShown:false}}/>
+      <Stack.Screen name='SpecialistDetails' component={SpecialistDetailsScreen} options={{headerShown:false}}/>
     </Stack.Navigator>
   );
 }

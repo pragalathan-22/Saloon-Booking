@@ -11,22 +11,30 @@ import {
   Animated
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import * as Location from 'expo-location';  // Importing Location from expo-location
+import * as Location from 'expo-location';
 
 const stylists = [
-  { id: 1, name: 'Stylist 1', image: require('../assets/stylist9.jpg'), category: 'Men\'s Haircut' },
-  { id: 2, name: 'Stylist 2', image: require('../assets/stylist9.jpg'), category: 'Women\'s Haircut' },
-  { id: 3, name: 'Stylist 3', image: require('../assets/stylist9.jpg'), category: 'Shaving' },
-  { id: 4, name: 'Stylist 4', image: require('../assets/stylist9.jpg'), category: 'Hair Coloring' },
-  { id: 5, name: 'Stylist 5', image: require('../assets/stylist9.jpg'), category: 'Beard Styling' },
-  { id: 6, name: 'Stylist 6', image: require('../assets/stylist9.jpg'), category: 'Haircut & Shaving' },
+  { id: 1, name: 'Jord', image: require('../assets/stylist9.jpg'), category: 'Men\'s Haircut', experience: '5 yrs', rating: '4.8' },
+  { id: 2, name: 'Prag', image: require('../assets/stylist9.jpg'), category: 'Women\'s Haircut', experience: '4 yrs', rating: '4.7' },
+  { id: 3, name: 'Tam', image: require('../assets/stylist9.jpg'), category: 'Shaving', experience: '3 yrs', rating: '4.5' },
+  { id: 4, name: 'Guna', image: require('../assets/stylist9.jpg'), category: 'Hair Coloring', experience: '6 yrs', rating: '4.9' },
+  { id: 5, name: 'Yuva', image: require('../assets/stylist9.jpg'), category: 'Beard Styling', experience: '2 yrs', rating: '4.3' },
+  { id: 6, name: 'Shad', image: require('../assets/stylist9.jpg'), category: 'Haircut & Shaving', experience: '7 yrs', rating: '4.6' },
+];
+
+const offers = [
+  { id: 1, title: '50% Off Haircuts', image: require('../assets/stylist9.jpg') },
+  { id: 2, title: 'Free Shave with Any Haircut', image: require('../assets/stylist9.jpg') },
+  { id: 3, title: '20% Off on Color Treatments', image: require('../assets/stylist9.jpg') },
+  { id: 4, title: 'Buy 1 Get 1 Free Beard Styling', image: require('../assets/stylist9.jpg') },
 ];
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const [locationName, setLocationName] = useState('Fetching location...');
-  const [rotation, setRotation] = useState(new Map());  // To manage rotation of each card
+  const [selectedCard, setSelectedCard] = useState(null); // Track selected card
+  const [animatedValue] = useState(new Animated.Value(0)); // Animation value for showing new effects
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -36,10 +44,8 @@ const HomeScreen = () => {
         setLocationName('Permission denied');
         return;
       }
-
       getLocation();
     };
-
     requestLocationPermission();
   }, []);
 
@@ -47,22 +53,10 @@ const HomeScreen = () => {
     try {
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-
       const address = await Location.reverseGeocodeAsync({ latitude, longitude });
-
-      // Extract area or district from the address
       if (address.length > 0) {
-        const { district, city, suburb } = address[0]; // Change order of preference
-        // Check if district is available first
-        if (district) {
-          setLocationName(district);
-        } else if (suburb) {
-          setLocationName(suburb);
-        } else if (city) {
-          setLocationName(city);
-        } else {
-          setLocationName('Location not found');
-        }
+        const { district, city, suburb } = address[0];
+        setLocationName(district || suburb || city || 'Location not found');
       } else {
         setLocationName('Location not found');
       }
@@ -72,80 +66,71 @@ const HomeScreen = () => {
     }
   };
 
-  const rotateCard = (id) => {
-    const newRotation = rotation.get(id) === 0 ? 180 : 0;  // Toggle between 0 and 180 degrees
-
-    // Create a new rotation map where we reset all other cards to 0 degrees
-    const newRotationMap = new Map(rotation);
-    newRotationMap.set(id, newRotation);
-
-    // Set the rotation for other cards to 0 degrees
-    rotation.forEach((value, key) => {
-      if (key !== id) {
-        newRotationMap.set(key, 0);
-      }
-    });
-
-    setRotation(newRotationMap);  // Update the rotation state
+  const toggleCard = (id) => {
+    if (selectedCard === id) {
+      setSelectedCard(null); // Deselect card if clicked again
+      Animated.timing(animatedValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      setSelectedCard(id); // Select new card
+      Animated.timing(animatedValue, {
+        toValue: 1, // Animation for new effect
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
   };
 
   const renderStylist = ({ item }) => {
-    const rotateValue = rotation.get(item.id) || 0;  // Get the current rotation value for the card
-    const rotateAnim = new Animated.Value(rotateValue);
-
     return (
       <TouchableOpacity
         style={styles.card}
-        onPress={() => rotateCard(item.id)} // Toggle rotation on press
+        onPress={() => toggleCard(item.id)} // Toggle card on press
       >
         <Animated.View
-          style={[
-            styles.cardContent,
-            {
-              transform: [
-                { rotateY: rotateAnim.interpolate({ inputRange: [0, 180], outputRange: ['0deg', '180deg'] }) },
-              ],
-            },
-          ]}
+          style={[styles.cardContent, {
+            opacity: animatedValue.interpolate({ inputRange: [0, 1], outputRange: [1, 0.7] }), // Example of fade-in effect
+          }]}
         >
           <View style={styles.imageContainer}>
             <Image source={item.image} style={styles.image} />
           </View>
-          <View style={styles.content}>
-            <Text style={styles.title}>{item.name}</Text>
-            <Text style={styles.description}>Experience: 5 yrs, Rating: 4.8</Text>
-          </View>
+          <Text style={styles.categoryText}>{item.category}</Text>
         </Animated.View>
 
-        {/* Back of the card */}
-        <Animated.View
-          style={[
-            styles.cardContent,
-            styles.cardBack,
-            {
-              transform: [
-                { rotateY: rotateAnim.interpolate({ inputRange: [0, 180], outputRange: ['180deg', '0deg'] }) },
-              ],
-            },
-          ]}
-        >
-          <View style={styles.content}>
-            <Text style={styles.categoryText}>{item.category}</Text>
-          </View>
-        </Animated.View>
+        {/* Show additional information when card is clicked */}
+        {selectedCard === item.id && (
+          <Animated.View style={[styles.cardBack, {
+            opacity: animatedValue.interpolate({ inputRange: [0, 1], outputRange: [0, 1] }), // Fade-in effect for back
+          }]}>
+            <View style={styles.textOverlay}>
+              <Text style={styles.title}>{item.name}</Text>
+              <Text style={styles.subtitle}>Category: {item.category}</Text>
+              <Text style={styles.subtitle}>Experience: {item.experience}</Text>
+              <Text style={styles.subtitle}>Rating: {item.rating}</Text>
+            </View>
+          </Animated.View>
+        )}
       </TouchableOpacity>
     );
   };
+
+  const renderOffer = ({ item }) => (
+    <View style={styles.offerCard}>
+      <Image source={item.image} style={styles.offerImage} />
+      <Text style={styles.offerText}>{item.title}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.location}>{locationName}</Text>
         <TouchableOpacity style={styles.profileIconContainer}>
-          <Image
-            source={require('../assets/stylist9.jpg')}
-            style={styles.profileIcon}
-          />
+          <Image source={require('../assets/stylist9.jpg')} style={styles.profileIcon} />
         </TouchableOpacity>
       </View>
 
@@ -159,6 +144,17 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         ListFooterComponent={<View style={{ height: 100 }} />}
       />
+
+      <View style={styles.offerSection}>
+        <FlatList
+          data={offers}
+          renderItem={renderOffer}
+          keyExtractor={(item) => item.id.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.offerList}
+        />
+      </View>
     </View>
   );
 };
@@ -177,13 +173,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  locationText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  picker: {
-    height: 40,
-    width: 180,
+  location: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
   },
   profileIconContainer: {
     paddingLeft: 10,
@@ -204,17 +197,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     margin: 20,
-    marginTop: 50,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 8,
+    overflow: 'hidden',
+    height: 190, // Adjust height as necessary
   },
   cardContent: {
     flex: 1,
     backfaceVisibility: 'hidden',
     borderRadius: 10,
+    overflow: 'hidden',
+    padding: 10,
   },
   cardBack: {
     position: 'absolute',
@@ -224,42 +220,75 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: '#fff',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: 15,
     borderRadius: 10,
   },
   imageContainer: {
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    width: '100%',
+    height: 120,
+    overflow: 'hidden',
   },
   image: {
     width: '100%',
-    height: 130,
-    marginTop: -50,
-    borderRadius: 15,
-    objectFit: "contain",
+    height: '100%',
+    resizeMode: 'cover',
+    borderRadius: 10,
   },
-  content: {
-    padding: 15,
+  textOverlay: {
+    justifyContent: 'flex-start',
+    alignItems:"center",
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
+    color: '#333',
     marginBottom: 5,
   },
-  description: {
+  subtitle: {
     fontSize: 14,
-    color: '#555',
+    color: '#777',
+    marginBottom: 5,
   },
   categoryText: {
     fontSize: 16,
-    color: '#333',
-    fontWeight: 'bold',
-  },
-  location: {
-    fontSize: 18,
     fontWeight: 'bold',
     color: '#000',
+    marginTop: 10,
+    alignItems:"center",
+  },
+  offerSection: {
+    marginBottom: 50,
+    paddingHorizontal: 10,
+  },
+  offerList: {
+    paddingVertical: 10,
+  },
+  offerCard: {
+    width: 200,
+    height: 100,
+    marginRight: 10,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    overflow: 'hidden',
+    elevation: 3,
+  },
+  offerImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    borderRadius: 8,
+  },
+  offerText: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textShadowColor: 'rgba(0,0,0,0.6)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
 });
 
