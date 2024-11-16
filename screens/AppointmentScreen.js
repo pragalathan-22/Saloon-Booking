@@ -33,25 +33,36 @@ export default function AppointmentScreen() {
     { id: 3, name: 'Makeup', image: require('../assets/stylist9.jpg') },
   ];
 
+  // Generate the current and future week's days
   const generateWeek = (date) => {
     const startOfWeek = moment(date).startOf('week');
-    return Array.from({ length: 7 }, (_, i) => ({
-      dayName: startOfWeek.clone().add(i, 'days').format('ddd'),
-      date: startOfWeek.clone().add(i, 'days').format('YYYY-MM-DD'),
-      displayDate: startOfWeek.clone().add(i, 'days').format('D'),
-    }));
+    return Array.from({ length: 7 }, (_, i) => {
+      const day = startOfWeek.clone().add(i, 'days');
+      return {
+        dayName: day.format('ddd'),
+        date: day.format('YYYY-MM-DD'),
+        displayDate: day.format('D'),
+        isPast: day.isBefore(moment(), 'day'), // Check if the date is in the past
+      };
+    }).filter(item => !item.isPast); // Filter out past dates
   };
 
+  // Handle previous week navigation, but prevent navigating to past weeks
   const handlePreviousWeek = () => {
-    setCurrentDate((prevDate) => moment(prevDate).subtract(1, 'week'));
+    const newDate = moment(currentDate).subtract(1, 'week');
+    if (!newDate.isBefore(moment(), 'day')) { // Only allow navigating to the previous week if it's not in the past
+      setCurrentDate(newDate);
+    }
   };
 
+  // Handle next week navigation, no restrictions needed, it can go to future weeks
   const handleNextWeek = () => {
     setCurrentDate((prevDate) => moment(prevDate).add(1, 'week'));
   };
 
   const weekDays = generateWeek(currentDate);
 
+  // Generate time slots
   const generateTimeSlots = (startTime, endTime) => {
     const slots = [];
     let current = moment(startTime, 'h:mm A');
@@ -86,7 +97,7 @@ export default function AppointmentScreen() {
       </View>
 
       <View style={styles.monthContainer}>
-        <TouchableOpacity onPress={handlePreviousWeek}>
+        <TouchableOpacity onPress={handlePreviousWeek} disabled={moment(currentDate).isBefore(moment(), 'day')}>
           <Icon name="chevron-left" size={28} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.monthText}>{currentDate.format('MMMM, YYYY')}</Text>
@@ -105,8 +116,10 @@ export default function AppointmentScreen() {
               style={[
                 styles.dateContainer,
                 item.date === selectedDate && styles.selectedDate,
+                item.isPast && { opacity: 0.5 }, // Disable styling for past dates
               ]}
-              onPress={() => setSelectedDate(item.date)}
+              onPress={() => !item.isPast && setSelectedDate(item.date)} // Disable selection for past dates
+              disabled={item.isPast} // Disable touch for past dates
             >
               <Text style={styles.dayName}>{item.dayName}</Text>
               <Text

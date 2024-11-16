@@ -7,6 +7,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen'
 import SpecialistDetailsScreen from './screens/SpecialistDetailsScreen';
+import OfferScreen from './screens/OfferScreen';
 // Icon imports
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -32,9 +33,9 @@ function BottomTabs() {
           borderTopWidth: 0,
           borderRadius: 15,
         },
-        tabBarLabelStyle: { color: 'white' },
+        tabBarLabelStyle: { color: 'black' },
         tabBarActiveTintColor: '#334155',
-        tabBarInactiveTintColor: '#95a5a6',
+        tabBarInactiveTintColor: '#95a5a6',     
         headerShown: false,
       }}
     >
@@ -62,6 +63,20 @@ function BottomTabs() {
             ),
         }}
       />
+
+      <Tab.Screen
+        name="Offer"
+        component={OfferScreen} // Replace with your Offer screen component
+        options={{
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Ionicons name="ribbon-outline" size={24} color="#FF5722" />
+            ) : (
+              <Ionicons name="ribbon-outline" size={24} color="black" />
+            ),
+        }}
+      />
+
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}

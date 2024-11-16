@@ -59,16 +59,7 @@ export default function SpecialistDetailsScreen({ route }) {
 
   const renderAboutContent = () => (
     <View style={styles.content}>
-      <Text style={styles.sectionTitle}>Information</Text>
-      <Text style={styles.contentText}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur euismod, nunc sed fermentum blandit, nisl velit ultrices ligula, sit amet consectetur magna purus at risus. Vivamus egestas ultrices nibh. Ut vulputate suscipit tristique.
-      </Text>
-      <Text style={styles.sectionTitle}>Contact</Text>
-      <View style={styles.contact}>
-        <Text style={styles.contactText}>Phone: +091 7788223736</Text>
-        <Text style={styles.contactText}>Email: info@hairstyle.in</Text>
-      </View>
-      <Text style={styles.sectionTitle}>Available Time</Text>
+    <Text style={styles.sectionTitle}>Available Time</Text>
       <View style={styles.timeSlots}>
         {['10:00 AM', '11:30 AM', '12:00 PM', '01:05 PM', '02:30 PM'].map((time, index) => (
           <TouchableOpacity
@@ -79,6 +70,15 @@ export default function SpecialistDetailsScreen({ route }) {
             <Text style={styles.timeSlotText}>{time}</Text>
           </TouchableOpacity>
         ))}
+      </View>
+      <Text style={styles.sectionTitle}>Information</Text>
+      <Text style={styles.contentText}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur euismod, nunc sed fermentum blandit, nisl velit ultrices ligula, sit amet consectetur magna purus at risus. Vivamus egestas ultrices nibh. Ut vulputate suscipit tristique.
+      </Text>
+      <Text style={styles.sectionTitle}>Contact</Text>
+      <View style={styles.contact}>
+        <Text style={styles.contactText}>Phone: +091 7788223736</Text>
+        <Text style={styles.contactText}>Email: info@hairstyle.in</Text>
       </View>
     </View>
   );
