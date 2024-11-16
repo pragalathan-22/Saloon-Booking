@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'; // Import Firebase Auth functions
-import { auth } from '../Firebase/FirebaseConfig'; // Assuming you have firebase.js for firebase initialization
+import { getFirestore, doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
+import { auth, db } from '../Firebase/FirebaseConfig'; // Assuming you have firebase.js for firebase initialization
 
 function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -16,8 +17,20 @@ function LoginScreen({ navigation }) {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password); // Firebase sign-in
-      navigation.replace('Main'); // Navigate to Main screen on successful login
+      // Firebase sign-in
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Store user data in Firestore database
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+
+        lastLogin: new Date(),
+      });
+
+      // Navigate to Main screen on successful login
+      navigation.replace('Main');
+      Alert.alert('Success', 'Logged in successfully!');
     } catch (error) {
       Alert.alert('Login Error', error.message); // Show error message if login fails
     }

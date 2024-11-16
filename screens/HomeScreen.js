@@ -144,7 +144,6 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         ListFooterComponent={<View style={{ height: 100 }} />}
       />
-
       <View style={styles.offerSection}>
         <FlatList
           data={offers}
@@ -164,6 +163,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f5f5f5',
     marginTop: 25,
+    marginBottom:10,
     padding: Platform.OS === 'web' ? 10 : 0,
   },
   header: {
@@ -172,6 +172,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop:15,
   },
   location: {
     fontSize: 18,
@@ -203,7 +204,7 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 8,
     overflow: 'hidden',
-    height: 190, // Adjust height as necessary
+    height: width > 600 ? 250 : 190, // Dynamic height based on screen width
   },
   cardContent: {
     flex: 1,

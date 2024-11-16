@@ -73,7 +73,7 @@ export default function AppointmentScreen() {
 
   const handleServiceSelect = (id) => {
     setSelectedService(id);
-    Alert.alert('Selected Service', `You selected service ID: ${id}`);
+    // Alert.alert('Selected Service', `You selected service ID: ${id}`);
   };
 
   return (
@@ -175,10 +175,6 @@ export default function AppointmentScreen() {
         keyExtractor={(item) => item.id.toString()}
         showsHorizontalScrollIndicator={false}
       />
-
-      <TouchableOpacity style={styles.bookButton}>
-        <Text style={styles.bookButtonText}>Book Appointment</Text>
-      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -243,16 +239,21 @@ const styles = StyleSheet.create({
   },
   timeSlots: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap', // Allow wrapping of time slots
+    justifyContent: 'space-between', // Ensure even spacing
     marginHorizontal: 15,
     marginVertical: 10,
   },
   timeSlot: {
     backgroundColor: 'white',
-    padding: 10,
+    paddingVertical: 10, // Adjust padding to make it more consistent
+    paddingHorizontal: 15,
     borderRadius: 15,
     margin: 5,
     alignItems: 'center',
+    minWidth: 80, // Ensure each time slot has a minimum width
+    maxWidth: '30%', // Prevent it from expanding too much
+    justifyContent: 'center', // Center the text inside the slot
   },
   timeSlotText: {
     fontSize: 14,
@@ -302,18 +303,5 @@ const styles = StyleSheet.create({
     borderRadius:10,
     objectFit:'cover',
   },
-  bookButton: {
-    backgroundColor: '#FF5722',
-    marginHorizontal: 15,
-    padding: 15,
-    borderRadius: 25,
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 60,
-  },
-  bookButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
 });
+9
