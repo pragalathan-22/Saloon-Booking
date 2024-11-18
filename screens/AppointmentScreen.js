@@ -90,9 +90,6 @@ export default function AppointmentScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity>
-          <Icon name="arrow-left" size={24} color="#fff" />
-        </TouchableOpacity>
         <Text style={styles.headerText}>Select your service</Text>
       </View>
 
@@ -202,12 +199,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 15,
     flexDirection: 'row',
-    alignItems: 'center',
   },
   headerText: {
     color: '#fff',
     fontSize: 18,
-    marginLeft: 10,
+    marginLeft: 100,
+    marginTop:20,
     fontWeight: 'bold',
   },
   monthContainer: {

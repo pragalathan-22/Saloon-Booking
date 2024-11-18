@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   FlatList,
   TextInput,
-  ScrollView,
   Alert,
 } from 'react-native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
@@ -183,47 +182,67 @@ export default function SpecialistDetailsScreen({ route }) {
     </View>
   );
 
-  return (
-    <View style={styles.container}>
-      <Image source={specialist.imagelist} style={styles.image} />
-      <Text style={styles.name}>{specialist.name}</Text>
-      <View style={styles.tabContainer}>
-        {['About', 'Services', 'Review'].map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            style={[styles.tab, selectedTab === tab && styles.activeTab]}
-            onPress={() => setSelectedTab(tab)}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                selectedTab === tab && styles.activeTabText,
-              ]}
-            >
-              {tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-      <ScrollView style={styles.scrollContainer}>
-        {selectedTab === 'About' && renderAboutContent()}
-        {selectedTab === 'Review' && renderReviewContent()}
-        {selectedTab === 'Services' && renderServicesContent()}
-      </ScrollView>
+  const renderContent = () => {
+    switch (selectedTab) {
+      case 'About':
+        return renderAboutContent();
+      case 'Review':
+        return renderReviewContent();
+      case 'Services':
+        return renderServicesContent();
+      default:
+        return null;
+    }
+  };
+
+  const renderTabs = () => (
+    ['About', 'Services', 'Review'].map((tab) => (
       <TouchableOpacity
-        style={styles.bookButton}
-        onPress={() => {
-          if (selectedTime && selectedServices.length > 0) {
-            bookAppointment(specialist, selectedTime, selectedServices);
-          } else {
-            Alert.alert('Error', 'Please select a time and at least one service.');
-          }
-        }}
+        key={tab}
+        style={[styles.tab, selectedTab === tab && styles.activeTab]}
+        onPress={() => setSelectedTab(tab)}
       >
-        <Text style={styles.bookButtonText}>Book Appointment</Text>
+        <Text
+          style={[styles.tabText, selectedTab === tab && styles.activeTabText]}
+        >
+          {tab}
+        </Text>
       </TouchableOpacity>
-    </View>
+    ))
   );
+
+return (
+  <View style={styles.container}>
+    <FlatList
+      data={[1]} // Dummy data to wrap the entire content into FlatList
+      renderItem={() => (
+        <View style={styles.contentContainer}>
+          <Image source={specialist.imagelist} style={styles.image} />
+          <Text style={styles.name}>{specialist.name}</Text>
+          <View style={styles.tabContainer}>
+            {renderTabs()}
+          </View>
+          <View style={styles.scrollContainer}>
+            {renderContent()}
+          </View>
+        </View>
+      )}
+      keyExtractor={() => '1'}
+    />
+    <TouchableOpacity
+      style={styles.bookButton}
+      onPress={() => {
+        if (selectedTime && selectedServices.length > 0) {
+          bookAppointment(specialist, selectedTime, selectedServices);
+        } else {
+          Alert.alert('Error', 'Please select a time and at least one service.');
+        }
+      }}
+    >
+      <Text style={styles.bookButtonText}>Book Appointment</Text>
+    </TouchableOpacity>
+  </View>
+);
 }
 
 const styles = StyleSheet.create({
